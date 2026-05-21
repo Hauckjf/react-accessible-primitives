@@ -7,7 +7,17 @@ import reactPlugin from "eslint-plugin-react";
 const react = reactPlugin as unknown as import("eslint").Plugin;
 
 export default tseslint.config(
-  { ignores: ["dist/**", "coverage/**", "storybook-static/**"] },
+  {
+    ignores: [
+      "dist/**",
+      "coverage/**",
+      "storybook-static/**",
+      // Config files are not part of the TS project — exclude from typed rules.
+      "eslint.config.ts",
+      "vitest.config.ts",
+      "tsup.config.ts",
+    ],
+  },
   eslint.configs.recommended,
   tseslint.configs.strictTypeChecked,
   {
