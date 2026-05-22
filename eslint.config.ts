@@ -24,7 +24,12 @@ export default tseslint.config(
     plugins: { react },
     languageOptions: {
       parserOptions: {
-        projectService: true,
+        // tests/ is intentionally excluded from tsconfig.json (build-only project).
+        // allowDefaultProject lets the project service lint those files without
+        // requiring them to be part of a named TS project.
+        projectService: {
+          allowDefaultProject: ["tests/**/*.ts", "tests/**/*.tsx"],
+        },
       },
     },
     settings: {
