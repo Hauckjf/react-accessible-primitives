@@ -24,12 +24,13 @@ export default tseslint.config(
     plugins: { react },
     languageOptions: {
       parserOptions: {
-        // tests/ is intentionally excluded from tsconfig.json (build-only project).
-        // allowDefaultProject lets the project service lint those files without
-        // requiring them to be part of a named TS project.
-        projectService: {
-          allowDefaultProject: ["tests/**/*.ts", "tests/**/*.tsx"],
-        },
+        // projectService=true ativa o "Project Service" do typescript-eslint, que
+        // resolve cada arquivo via tsconfig.json automaticamente. tests/ JÁ está
+        // no `include` do tsconfig.json, então não precisamos de allowDefaultProject.
+        // Bug histórico: `allowDefaultProject: ["tests/**/*.ts"]` quebrou CI em
+        // typescript-eslint v8.x porque a regra agora proíbe `**` (motivo: o
+        // default-project scan é caro e o glob amplo derruba performance).
+        projectService: true,
       },
     },
     settings: {
