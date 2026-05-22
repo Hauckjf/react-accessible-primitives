@@ -1,10 +1,11 @@
 import { describe, expectTypeOf, it } from 'vitest';
+import type { ReactElement } from 'react';
 import type {
   AsProp,
   PolymorphicComponentProps,
   PolymorphicForwardRef,
   PropsWithAs,
-} from '../polymorphic';
+} from '../polymorphic.js';
 
 describe('AsProp', () => {
   it('carries the element type in the as-prop value', () => {
@@ -24,19 +25,18 @@ describe('PropsWithAs', () => {
   });
 
   it('rejects href when as="button" — ButtonHTMLAttributes has no href', () => {
-    expectTypeOf<PropsWithAs<'button'>>().not.toMatchTypeOf<{ href: string }>();
-    // @ts-expect-error href is not a valid attribute for <button>
-    const _: PropsWithAs<'button'> = { href: '/path' };
-    void _;
+    // Extract<T, U> is never when T has no overlap with U;
+    // if PropsWithAs<'button'> gained href this assertion would fail to compile.
+    expectTypeOf<Extract<PropsWithAs<'button'>, { href: string }>>().toBeNever();
   });
 
   it('rejects a value outside the own-prop type union when as="a"', () => {
     // Omit removes the anchor's wider `type: string` when OwnProps declares `type`,
-    // so only the own-prop union is assignable — 'link' is an error on <a> too.
+    // so only the own-prop union is assignable — 'link' is not in that union.
     type OwnProps = { type?: 'submit' | 'button' | 'reset' };
-    // @ts-expect-error 'link' is not in the 'submit' | 'button' | 'reset' union
-    const _: PropsWithAs<'a', OwnProps> = { type: 'link' };
-    void _;
+    expectTypeOf<PropsWithAs<'a', OwnProps>['type']>().toEqualTypeOf<
+      'submit' | 'button' | 'reset' | undefined
+    >();
   });
 
   it('own-props shadow a conflicting host-element prop', () => {
@@ -65,7 +65,10 @@ describe('PolymorphicComponentProps', () => {
 
 describe('PolymorphicForwardRef', () => {
   it('is a callable type', () => {
-    expectTypeOf<PolymorphicForwardRef<'button'>>().toBeFunction();
+    // ReturnType<T> only resolves when T is callable; this line would not
+    // compile if PolymorphicForwardRef<'button'> stopped being a function type.
+    type Comp = PolymorphicForwardRef<'button'>;
+    expectTypeOf<ReturnType<Comp>>().toEqualTypeOf<ReactElement | null>();
   });
 
   it('carries an optional displayName string property', () => {
