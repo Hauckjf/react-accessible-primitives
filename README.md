@@ -4,7 +4,7 @@
 
 > Eight accessible React primitives with polymorphic typing, CSS token theming, axe-core tests, and a GitHub Actions CI pipeline — ready to publish.
 
-React 18 component library of 8 accessible primitives built on Radix UI. Each component uses a polymorphic typed `as` prop, CSS custom-property tokens for zero-runtime styling, and is verified by axe-core in Vitest. TypeScript is configured with `strict: true` and `noUncheckedIndexedAccess: true`; ESLint enforces no-`any` across the codebase. Bundl
+React 18 component library of 8 accessible primitives built on Radix UI. Each component uses a polymorphic typed `as` prop, CSS custom-property tokens for zero-runtime styling, and is verified by axe-core in Vitest. TypeScript is configured with `strict: true` and `noUncheckedIndexedAccess: true`; ESLint enforces no-`any` across the codebase. Bundled with tsup for ESM + CJS output with TypeScript declarations and inline source maps.
 
 ## Table of contents
 
@@ -18,7 +18,7 @@ React 18 component library of 8 accessible primitives built on Radix UI. Each co
 
 ## About
 
-React 18 component library of 8 accessible primitives built on Radix UI. Each component uses a polymorphic typed `as` prop, CSS custom-property tokens for zero-runtime styling, and is verified by axe-core in Vitest. TypeScript is configured with `strict: true` and `noUncheckedIndexedAccess: true`; ESLint enforces no-`any` across the codebase. Bundl
+React 18 component library of 8 accessible primitives built on Radix UI. Each component uses a polymorphic typed `as` prop, CSS custom-property tokens for zero-runtime styling, and is verified by axe-core in Vitest. TypeScript is configured with `strict: true` and `noUncheckedIndexedAccess: true`; ESLint enforces no-`any` across the codebase. Bundled with tsup for ESM + CJS output.
 
 **What this demonstrates**
 
@@ -48,7 +48,31 @@ _Examples coming with the first feature release._
 
 ## Architecture
 
-_High-level diagram and decision records in `docs/`._
+The library is organized in four layers, each building on the one below:
+
+```mermaid
+graph TD
+    A["CSS Custom Property Tokens<br/>:root { --rap-color-*, --rap-spacing-*, --rap-radius-* }"]
+    B["Radix UI Headless Primitives<br/>ARIA roles · keyboard navigation · focus management"]
+    C["Polymorphic as Wrapper<br/>PolymorphicComponentProps&lt;C, OwnProps&gt; utility type"]
+    D["Component Public API<br/>Button · Input · Checkbox · Select · Dialog · Toast · Badge · Link"]
+
+    A --> B
+    B --> C
+    C --> D
+```
+
+| Layer | Responsibility |
+|-------|----------------|
+| CSS Custom Property Tokens | Define the visual contract — colors, spacing, radii — as `:root` CSS variables. No JS runtime; consumers override with a single CSS rule. |
+| Radix UI Headless Primitives | Handle ARIA semantics, keyboard navigation, and focus management. Components never re-implement what Radix already audits. |
+| Polymorphic `as` Wrapper | Let callers swap the rendered HTML element while retaining full TypeScript prop narrowing. `as="a"` surfaces anchor attributes; `as="button"` surfaces button attributes. |
+| Component Public API | The eight exported primitives consumers import. Each is documented with a prop table, token override example, and axe-core test coverage. |
+
+Decision records for major design choices live in [`docs/adr/`](docs/adr/):
+
+- [ADR 0001 — Radix UI as accessibility foundation](docs/adr/0001-radix-ui-as-accessibility-foundation.md)
+- [ADR 0002 — Polymorphic `as` prop](docs/adr/0002-polymorphic-as-prop.md)
 
 ## Definition of done
 
@@ -66,14 +90,8 @@ _High-level diagram and decision records in `docs/`._
 
 ## Contributing
 
-See [.github/CONTRIBUTING.md](.github/CONTRIBUTING.md).
+See [CONTRIBUTING.md](.github/CONTRIBUTING.md) for guidelines on filing issues, proposing changes, and the pull request checklist.
 
 ## License
 
 [MIT](LICENSE)
-
----
-
-<sub>Part of [@Hauckjf](https://github.com/Hauckjf)'s portfolio.</sub>
-
-<sub>Built with [Claude Code](https://claude.com/claude-code) — reviewed, tested, and maintained by [@Hauckjf](https://github.com/Hauckjf).</sub>
