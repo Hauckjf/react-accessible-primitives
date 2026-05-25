@@ -1,143 +1,111 @@
-import { render, screen } from '@testing-library/react';
-import { describe, expect, it } from 'vitest';
-import { Button, type ButtonSize, type ButtonVariant } from '../';
+import { render, screen } from "@testing-library/react";
+import { axe } from "jest-axe";
+import { describe, expect, it } from "vitest";
+import styles from "../Button.module.css";
+import { Button } from "../Button";
 
-describe('Button', () => {
-  describe('element type', () => {
-    it('renders a <button> element by default', () => {
-      render(<Button>Click me</Button>);
-      expect(
-        screen.getByRole('button', { name: 'Click me' }),
-      ).toBeInTheDocument();
+describe("Button", () => {
+  describe("a11y", () => {
+    it("has no axe violations with default props", async () => {
+      const { container } = render(<Button>Click me</Button>);
+      const results = await axe(container);
+      expect(results).toHaveNoViolations();
     });
 
-    it('renders the element specified by the as prop', () => {
-      render(
-        <Button as="a" href="https://example.com">
-          Go there
-        </Button>,
-      );
-      expect(
-        screen.getByRole('link', { name: 'Go there' }),
-      ).toBeInTheDocument();
-    });
-  });
-
-  describe('loading state', () => {
-    it('sets aria-busy="true" when isLoading is true', () => {
-      render(<Button isLoading>Loading</Button>);
-      expect(screen.getByRole('button')).toHaveAttribute('aria-busy', 'true');
+    it("has no axe violations in loading state", async () => {
+      const { container } = render(<Button loading>Submit</Button>);
+      const results = await axe(container);
+      expect(results).toHaveNoViolations();
     });
 
-    it('omits aria-busy when isLoading is false', () => {
-      render(<Button>Normal</Button>);
-      expect(screen.getByRole('button')).not.toHaveAttribute('aria-busy');
+    it("exposes aria-busy when loading", () => {
+      render(<Button loading>Submit</Button>);
+      expect(screen.getByRole("button")).toHaveAttribute("aria-busy", "true");
     });
 
-    it('renders a spinner SVG when isLoading is true', () => {
-      const { container } = render(<Button isLoading>Submit</Button>);
-      expect(container.querySelector('svg')).toBeInTheDocument();
-    });
-
-    it('hides the spinner from assistive technology', () => {
-      const { container } = render(<Button isLoading>Submit</Button>);
-      expect(container.querySelector('svg')).toHaveAttribute(
-        'aria-hidden',
-        'true',
-      );
-    });
-
-    it('does not render a spinner when isLoading is false', () => {
-      const { container } = render(<Button>Submit</Button>);
-      expect(container.querySelector('svg')).not.toBeInTheDocument();
+    it("omits aria-busy when not loading", () => {
+      render(<Button>Submit</Button>);
+      expect(screen.getByRole("button")).not.toHaveAttribute("aria-busy");
     });
   });
 
-  describe('disabled state', () => {
-    it('sets the disabled attribute on a native button when isDisabled is true', () => {
-      render(<Button isDisabled>Disabled</Button>);
-      expect(screen.getByRole('button')).toBeDisabled();
+  describe("polymorphic as prop", () => {
+    it("renders a <button> by default", () => {
+      render(<Button>Click</Button>);
+      expect(screen.getByRole("button", { name: "Click" })).toBeInTheDocument();
     });
 
-    it('does not disable a native button when isDisabled is false', () => {
-      render(<Button>Enabled</Button>);
-      expect(screen.getByRole('button')).not.toBeDisabled();
-    });
-
-    it('sets aria-disabled="true" on a non-button element when isDisabled is true', () => {
+    it("renders an <a> when as='a'", () => {
       render(
-        <Button as="a" href="https://example.com" isDisabled>
-          Disabled link
+        <Button as="a" href="/about">
+          About
         </Button>,
       );
-      expect(screen.getByRole('link')).toHaveAttribute(
-        'aria-disabled',
-        'true',
-      );
+      const link = screen.getByRole("link", { name: "About" });
+      expect(link).toBeInTheDocument();
+      expect(link).toHaveAttribute("href", "/about");
     });
 
-    it('omits aria-disabled on a non-button element when isDisabled is false', () => {
-      render(
-        <Button as="a" href="https://example.com">
-          Link
-        </Button>,
-      );
-      expect(screen.getByRole('link')).not.toHaveAttribute('aria-disabled');
+    it("forwards extra props to the underlying element", () => {
+      render(<Button data-testid="btn">Click</Button>);
+      expect(screen.getByTestId("btn")).toBeInTheDocument();
     });
   });
 
-  describe('variants', () => {
-    it('defaults to solid variant', () => {
-      render(<Button>Default</Button>);
-      expect(screen.getByRole('button')).toHaveAttribute(
-        'data-variant',
-        'solid',
-      );
-    });
-
-    it.each(['solid', 'outline', 'ghost'] as ButtonVariant[])(
-      'applies data-variant="%s"',
+  describe("variants", () => {
+    it.each(["primary", "secondary", "ghost"] as const)(
+      "applies the %s variant class",
       (variant) => {
         render(<Button variant={variant}>Button</Button>);
-        expect(screen.getByRole('button')).toHaveAttribute(
-          'data-variant',
-          variant,
-        );
+        expect(screen.getByRole("button").className).toContain(styles[variant]);
       },
     );
+
+    it("defaults to the primary variant", () => {
+      render(<Button>Button</Button>);
+      expect(screen.getByRole("button").className).toContain(styles.primary);
+    });
   });
 
-  describe('sizes', () => {
-    it('defaults to md size', () => {
-      render(<Button>Default</Button>);
-      expect(screen.getByRole('button')).toHaveAttribute('data-size', 'md');
+  describe("sizes", () => {
+    it.each(["sm", "md", "lg"] as const)("applies the %s size class", (size) => {
+      render(<Button size={size}>Button</Button>);
+      expect(screen.getByRole("button").className).toContain(styles[size]);
     });
 
-    it.each(['sm', 'md', 'lg'] as ButtonSize[])(
-      'applies data-size="%s"',
-      (size) => {
-        render(<Button size={size}>Button</Button>);
-        expect(screen.getByRole('button')).toHaveAttribute('data-size', size);
-      },
-    );
+    it("defaults to the md size", () => {
+      render(<Button>Button</Button>);
+      expect(screen.getByRole("button").className).toContain(styles.md);
+    });
   });
 
-  describe('prop forwarding', () => {
-    it('passes through additional HTML attributes', () => {
-      render(
-        <Button data-testid="my-button" type="submit">
-          Submit
-        </Button>,
-      );
-      expect(screen.getByTestId('my-button')).toHaveAttribute(
-        'type',
-        'submit',
-      );
+  describe("loading state", () => {
+    it("renders a spinner element when loading", () => {
+      render(<Button loading>Save</Button>);
+      expect(
+        screen.getByRole("button").querySelector('[aria-hidden="true"]'),
+      ).not.toBeNull();
     });
 
-    it('merges a custom className alongside the component class', () => {
-      render(<Button className="extra-class">Button</Button>);
-      expect(screen.getByRole('button').className).toContain('extra-class');
+    it("applies the loading class when loading", () => {
+      render(<Button loading>Save</Button>);
+      expect(screen.getByRole("button").className).toContain(styles.loading);
+    });
+
+    it("does not render a spinner when not loading", () => {
+      render(<Button>Save</Button>);
+      expect(
+        screen.getByRole("button").querySelector('[aria-hidden="true"]'),
+      ).toBeNull();
+    });
+  });
+
+  describe("className merging", () => {
+    it("appends consumer className to the component classes", () => {
+      render(<Button className="extra">Click</Button>);
+      const el = screen.getByRole("button");
+      expect(el.className).toContain("extra");
+      expect(el.className).toContain(styles.button);
     });
   });
 });
