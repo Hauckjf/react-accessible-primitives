@@ -1,12 +1,13 @@
-declare const styles: Readonly<{
-  button: string;
-  primary: string;
-  secondary: string;
-  ghost: string;
-  sm: string;
-  md: string;
-  lg: string;
-  loading: string;
-  spinner: string;
-}>;
+declare const styles: {
+  readonly button: string;
+  readonly variantPrimary: string;
+  readonly variantSecondary: string;
+  readonly variantGhost: string;
+  readonly sizeSm: string;
+  readonly sizeMd: string;
+  readonly sizeLg: string;
+  readonly loading: string;
+  readonly spinner: string;
+};
+
 export default styles;
