@@ -1,0 +1,74 @@
+:root {
+  /* Neutral palette */
+  --rap-color-neutral-50: #fafafa;
+  --rap-color-neutral-100: #f4f4f5;
+  --rap-color-neutral-200: #e4e4e7;
+  --rap-color-neutral-300: #d4d4d8;
+  --rap-color-neutral-400: #a1a1aa;
+  --rap-color-neutral-500: #71717a;
+  --rap-color-neutral-600: #52525b;
+  --rap-color-neutral-700: #3f3f46;
+  --rap-color-neutral-800: #27272a;
+  --rap-color-neutral-900: #18181b;
+
+  /* Accent palette */
+  --rap-color-accent-50: #eff6ff;
+  --rap-color-accent-100: #dbeafe;
+  --rap-color-accent-200: #bfdbfe;
+  --rap-color-accent-300: #93c5fd;
+  --rap-color-accent-400: #60a5fa;
+  --rap-color-accent-500: #3b82f6;
+  --rap-color-accent-600: #2563eb;
+  --rap-color-accent-700: #1d4ed8;
+  --rap-color-accent-800: #1e40af;
+  --rap-color-accent-900: #1e3a8a;
+
+  /* Danger palette */
+  --rap-color-danger-50: #fef2f2;
+  --rap-color-danger-100: #fee2e2;
+  --rap-color-danger-200: #fecaca;
+  --rap-color-danger-300: #fca5a5;
+  --rap-color-danger-400: #f87171;
+  --rap-color-danger-500: #ef4444;
+  --rap-color-danger-600: #dc2626;
+  --rap-color-danger-700: #b91c1c;
+  --rap-color-danger-800: #991b1b;
+  --rap-color-danger-900: #7f1d1d;
+
+  /* Spacing — 4 px grid */
+  --rap-space-1: 4px;
+  --rap-space-2: 8px;
+  --rap-space-3: 12px;
+  --rap-space-4: 16px;
+  --rap-space-5: 20px;
+  --rap-space-6: 24px;
+  --rap-space-7: 28px;
+  --rap-space-8: 32px;
+  --rap-space-9: 36px;
+  --rap-space-10: 40px;
+  --rap-space-11: 44px;
+  --rap-space-12: 48px;
+  --rap-space-13: 52px;
+  --rap-space-14: 56px;
+  --rap-space-15: 60px;
+  --rap-space-16: 64px;
+
+  /* Border radius */
+  --rap-radius-sm: 4px;
+  --rap-radius-md: 8px;
+  --rap-radius-lg: 12px;
+  --rap-radius-full: 9999px;
+
+  /* Font size */
+  --rap-font-size-xs: 12px;
+  --rap-font-size-sm: 14px;
+  --rap-font-size-md: 16px;
+  --rap-font-size-lg: 18px;
+  --rap-font-size-xl: 20px;
+  --rap-font-size-2xl: 24px;
+
+  /* Box shadow */
+  --rap-shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+  --rap-shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+  --rap-shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+}
